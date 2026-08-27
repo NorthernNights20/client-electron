@@ -111,7 +111,13 @@ if (!process.versions.electron) {
   let mainWindow;
 
   ipcMain.on("tab:create", (event, { tabId, url }) => {
-    const view = new BrowserView();
+    const view = new BrowserView({
+      webPreferences: {
+        preload: path.join(__dirname, "preload-view.js"),
+        contextIsolation: true,
+        nodeIntegration: false,
+      },
+    });
     tabViews.set(tabId, view);
     mainWindow.addBrowserView(view);
 
@@ -128,6 +134,16 @@ if (!process.versions.electron) {
     });
 
     view.webContents.loadURL(url);
+  });
+
+  ipcMain.on("view-title-changed", (event, title) => {
+    // Find which tab this came from and send to mainWindow
+    for (const [tabId, view] of tabViews.entries()) {
+      if (view.webContents === event.sender) {
+        mainWindow.webContents.send("tab:title-updated", { tabId, title });
+        break;
+      }
+    }
   });
 
   ipcMain.on("tab:close", (event, tabId) => {

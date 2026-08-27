@@ -149,12 +149,12 @@
       const tabData = {
         id: tabId,
         title: 'Loading...',
-        url: TAB_URL,
+        url: TAB_URL + '?v=' + Date.now(),
       };
       tabs.push(tabData);
       renderTabs();
       activateTab(tabId);
-      window.electronAPI.createTab(tabId, TAB_URL);
+      window.electronAPI.createTab(tabId, tabData.url);
     }
 
     function closeTab(tabId) {
@@ -224,12 +224,14 @@
       return div.innerHTML;
     }
 
-    window.electronAPI.onTabTitleUpdated((tabId, title) => {
-      updateTabTitle(tabId, title);
-    });
-
     // Apri una scheda all'avvio
     window.addEventListener('DOMContentLoaded', () => {
+      // Registra il listener prima di creare le tab
+      if (window.electronAPI) {
+        window.electronAPI.onTabTitleUpdated((tabId, title) => {
+          updateTabTitle(tabId, title);
+        });
+      }
       addTab();
     });
   </script>
