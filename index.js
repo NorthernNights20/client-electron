@@ -12,7 +12,7 @@ if (!process.versions.electron) {
 
   child.on("exit", (code) => process.exit(code ?? 0));
 } else {
-  const { app, BrowserWindow, ipcMain } = require("electron");
+  const { app, BrowserWindow, ipcMain, shell } = require("electron");
   const fs = require("fs");
   const fsp = require("fs/promises");
   const crypto = require("crypto");
@@ -170,6 +170,11 @@ if (!process.versions.electron) {
         height: height - 40,
       });
     }
+  });
+
+  ipcMain.on("open-saves-dir", () => {
+    const savesDir = path.join(app.getPath("userData"), "saves/userfs/godot/app_userdata/WorldWriters");
+    shell.openPath(savesDir);
   });
 
   app.whenReady().then(() => {

@@ -233,4 +233,5 @@ contextBridge.exposeInMainWorld("electronAPI", {
 		ipcRenderer.on("tab:title-updated", (event, data) =>
 			callback(data.tabId, data.title)
 		),
+	openSavesDir: () => ipcRenderer.send("open-saves-dir"),
 });
