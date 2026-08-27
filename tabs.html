@@ -22,8 +22,8 @@
     #tab-bar {
       display: flex;
       align-items: center;
-      background: #f5f5f5;
-      border-bottom: 1px solid #e0e0e0;
+      background: #131010;
+      border-bottom: 1px solid #0b0909;
       height: 40px;
       padding: 0 8px;
       gap: 4px;
@@ -35,8 +35,8 @@
       display: flex;
       align-items: center;
       justify-content: space-between;
-      background: #e8e8e8;
-      border: 1px solid #d0d0d0;
+      background: #131010;
+      border: 1px solid #0b0909;
       border-radius: 4px 4px 0 0;
       padding: 6px 12px;
       min-width: 100px;
@@ -50,12 +50,12 @@
     }
 
     .tab:hover {
-      background: #e0e0e0;
+      background: #252525;
     }
 
     .tab.active {
-      background: #fff;
-      border-bottom-color: #fff;
+      background: #000000;
+      border-bottom-color: #000;
       font-weight: 500;
     }
 
@@ -64,6 +64,7 @@
       overflow: hidden;
       text-overflow: ellipsis;
       margin-right: 6px;
+      color: #fff;
     }
 
     .tab-close {
@@ -123,10 +124,10 @@
 </head>
 <body>
   <div id="tab-bar">
-    <button id="add-tab-btn" title="Aggiungi nuova scheda">+</button>
+    <button id="add-tab-btn" title="Add new tab">+</button>
   </div>
   <div id="content-container">
-    <div class="no-tabs">Clicca + per aggiungere una scheda</div>
+    <div class="no-tabs">Click + to add a new tab</div>
   </div>
 
   <script>
@@ -147,7 +148,7 @@
       const tabId = nextTabId++;
       const tabData = {
         id: tabId,
-        title: 'Caricamento...',
+        title: 'Loading...',
         url: TAB_URL,
       };
       tabs.push(tabData);
@@ -170,7 +171,7 @@
         } else {
           activeTabId = null;
           renderTabs();
-          contentContainer.innerHTML = '<div class="no-tabs">Clicca + per aggiungere una scheda</div>';
+          contentContainer.innerHTML = '<div class="no-tabs">Click + to add a new tab</div>';
         }
       } else {
         renderTabs();
@@ -225,6 +226,11 @@
 
     window.electronAPI.onTabTitleUpdated((tabId, title) => {
       updateTabTitle(tabId, title);
+    });
+
+    // Apri una scheda all'avvio
+    window.addEventListener('DOMContentLoaded', () => {
+      addTab();
     });
   </script>
 </body>
