@@ -105,8 +105,59 @@ if (!process.versions.electron) {
     };
   });
 
+  const { BrowserView } = require("electron");
+
+  const tabViews = new Map();
+  let mainWindow;
+
+  ipcMain.on("tab:create", (event, { tabId, url }) => {
+    const view = new BrowserView();
+    tabViews.set(tabId, view);
+    mainWindow.addBrowserView(view);
+
+    const { width, height } = mainWindow.getContentBounds();
+    view.setBounds({
+      x: 0,
+      y: 40,
+      width: width,
+      height: height - 40,
+    });
+
+    view.webContents.on("page-title-updated", (event, title) => {
+      mainWindow.webContents.send("tab:title-updated", { tabId, title });
+    });
+
+    view.webContents.loadURL(url);
+  });
+
+  ipcMain.on("tab:close", (event, tabId) => {
+    const view = tabViews.get(tabId);
+    if (view) {
+      mainWindow.removeBrowserView(view);
+      view.webContents.destroy();
+      tabViews.delete(tabId);
+    }
+  });
+
+  ipcMain.on("tab:show", (event, tabId) => {
+    tabViews.forEach((view) => {
+      view.setBounds({ x: 0, y: -10000, width: 0, height: 0 });
+    });
+
+    const view = tabViews.get(tabId);
+    if (view) {
+      const { width, height } = mainWindow.getContentBounds();
+      view.setBounds({
+        x: 0,
+        y: 40,
+        width: width,
+        height: height - 40,
+      });
+    }
+  });
+
   app.whenReady().then(() => {
-    const win = new BrowserWindow({
+    mainWindow = new BrowserWindow({
       width: 1280,
       height: 800,
       autoHideMenuBar: true,
@@ -117,6 +168,22 @@ if (!process.versions.electron) {
       },
     });
 
-    win.loadURL("https://client.northboundproject.uk/web/");
+    mainWindow.loadFile("tabs.html");
+
+    mainWindow.on("resize", () => {
+      const { width, height } = mainWindow.getContentBounds();
+      const activeView = Array.from(tabViews.values()).find((v) => {
+        const bounds = v.getBounds();
+        return bounds.y >= 0;
+      });
+      if (activeView) {
+        activeView.setBounds({
+          x: 0,
+          y: 40,
+          width: width,
+          height: height - 40,
+        });
+      }
+    });
   });
 }

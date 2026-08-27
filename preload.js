@@ -224,3 +224,13 @@ contextBridge.exposeInMainWorld("electronGodotSync", {
 		}
 	},
 });
+
+contextBridge.exposeInMainWorld("electronAPI", {
+	createTab: (tabId, url) => ipcRenderer.send("tab:create", { tabId, url }),
+	closeTab: (tabId) => ipcRenderer.send("tab:close", tabId),
+	showTab: (tabId) => ipcRenderer.send("tab:show", tabId),
+	onTabTitleUpdated: (callback) =>
+		ipcRenderer.on("tab:title-updated", (event, data) =>
+			callback(data.tabId, data.title)
+		),
+});
