@@ -12,13 +12,13 @@ jobs:
         include:
           - os: windows-latest
             build-script: export:win
-            artifact-name: electron-godot-*.exe
+            artifact-name: dist/*.exe
           - os: ubuntu-latest
             build-script: export:linux
-            artifact-name: electron-godot-*.AppImage
+            artifact-name: dist/*.AppImage
           - os: macos-latest
             build-script: export:mac
-            artifact-name: electron-godot-*.dmg
+            artifact-name: dist/*.dmg
 
     steps:
       - name: Checkout repository
@@ -42,5 +42,5 @@ jobs:
         uses: actions/upload-artifact@v4
         with:
           name: ${{ matrix.os }}-build
-          path: dist/${{ matrix.artifact-name }}
+          path: ${{ matrix.artifact-name }}
           if-no-files-found: warn
