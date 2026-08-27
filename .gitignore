@@ -1,0 +1,45 @@
+# Dependencies
+node_modules/
+package-lock.json
+yarn.lock
+
+# Build artifacts
+dist/
+build/
+out/
+
+# Electron
+*.exe
+*.dmg
+*.AppImage
+*.zip
+*.tar.gz
+
+# OS-specific files
+.DS_Store
+Thumbs.db
+.windows
+.linux
+.mac
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# IDE
+.vscode/
+.idea/
+*.swp
+*.swo
+*~
+
+# Environment
+.env
+.env.local
+.env.*.local
+
+# Runtime
+.cache/
+*.pdb

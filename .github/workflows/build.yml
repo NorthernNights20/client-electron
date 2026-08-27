@@ -1,0 +1,44 @@
+name: Build Electron App
+
+on:
+  workflow_dispatch
+
+jobs:
+  build:
+    runs-on: ${{ matrix.os }}
+    strategy:
+      matrix:
+        os: [windows-latest, ubuntu-latest, macos-latest]
+        include:
+          - os: windows-latest
+            build-script: export:win
+            artifact-name: electron-godot-*.exe
+          - os: ubuntu-latest
+            build-script: export:linux
+            artifact-name: electron-godot-*.AppImage
+          - os: macos-latest
+            build-script: export:mac
+            artifact-name: electron-godot-*.dmg
+
+    steps:
+      - name: Checkout repository
+        uses: actions/checkout@v4
+
+      - name: Setup Node.js
+        uses: actions/setup-node@v4
+        with:
+          node-version: '18'
+          cache: 'npm'
+
+      - name: Install dependencies
+        run: npm install
+
+      - name: Build application
+        run: npm run ${{ matrix.build-script }}
+
+      - name: Upload artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: ${{ matrix.os }}-build
+          path: dist/${{ matrix.artifact-name }}
+          if-no-files-found: warn

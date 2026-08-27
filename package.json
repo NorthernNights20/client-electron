@@ -1,0 +1,19 @@
+{
+  "name": "electron-godot",
+  "version": "1.0.0",
+  "description": "",
+  "license": "ISC",
+  "author": "",
+  "type": "commonjs",
+  "main": "index.js",
+  "scripts": {
+    "start": "electron .",
+    "export:win": "npx electron-builder --win portable",
+    "export:linux": "npx electron-builder --linux AppImage",
+    "export:mac": "npx electron-builder --mac dmg",
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "devDependencies": {
+    "electron": "^43.4.0"
+  }
+}
